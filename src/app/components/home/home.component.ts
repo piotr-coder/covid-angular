@@ -9,6 +9,7 @@ import { DataServiceService } from 'src/app/services/data-service.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+  loading = true;
   totalCases = 0;
   totalDeaths = 0;
   globalData: GlobalDataSummary[];
@@ -17,6 +18,7 @@ export class HomeComponent implements OnInit {
     PieChart : ChartType.PieChart,
     ColumnChart : ChartType.ColumnChart,
     height: 500,
+    columns: [],
     options: {
       animation:{
         duration: 1000,
@@ -28,9 +30,35 @@ export class HomeComponent implements OnInit {
 
   constructor(private dataService: DataServiceService) { }
 
+  ngOnInit(): void {
+    this.dataService.getGlobalData().subscribe(
+      {
+        next: (result) => {
+          this.globalData = result;
+          result.forEach(cs => {
+            if (!Number.isNaN(cs.cases)) {
+              this.totalCases += cs.cases;
+              this.totalDeaths += cs.deaths;
+            }
+          })
+          this.initChart('c');
+        },
+        complete: ()=> {
+          this.loading = false;
+        }
+      }
+    )
+  }
+
   initChart(caseType: string) {
     this.datatable = [];
     // this.datatable.push(["Country", "Cases"]);
+    if(caseType == 'd'){
+      this.chart.columns=["Country", "Deaths"];      
+    } else {
+      this.chart.columns=["Country", "Cases"];
+    }
+    
     this.globalData.forEach(cs => {
       let value: number;
       if (caseType == 'c') {
@@ -47,25 +75,8 @@ export class HomeComponent implements OnInit {
         cs.country, value
       ])
     })
-    console.log(this.datatable[2]);
   }
-  ngOnInit(): void {
-    this.dataService.getGlobalData().subscribe(
-      {
-        next: (result) => {
-          console.log(result);
-          this.globalData = result;
-          result.forEach(cs => {
-            if (!Number.isNaN(cs.cases)) {
-              this.totalCases += cs.cases;
-              this.totalDeaths += cs.deaths;
-            }
-          })
-          this.initChart('c');
-        }
-      }
-    )
-  }
+
   updateChart(input: HTMLInputElement): void {
     this.initChart(input.value);
   }
