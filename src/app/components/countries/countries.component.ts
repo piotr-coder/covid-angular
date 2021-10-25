@@ -14,7 +14,7 @@ import { DataServiceService } from 'src/app/services/data-service.service';
 export class CountriesComponent implements OnInit {
 
   loading = true;
-  data: GlobalDataSummary[];
+  data;
   countries: string[] = [];
   totalCases: number = 0;
   totalDeaths: number = 0;
