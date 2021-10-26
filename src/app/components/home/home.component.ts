@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ChartType } from 'angular-google-charts';
-import { GlobalDataSummary } from 'src/app/model/global-data';
+import { merge } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { DataServiceService } from 'src/app/services/data-service.service';
 
 @Component({
@@ -13,7 +14,7 @@ export class HomeComponent implements OnInit {
   totalCases = 0;
   totalDeaths = 0;
   newCases = 0;
-  globalData: GlobalDataSummary[];
+  data: any;
   datatable = [];
   chart = {
     PieChart : ChartType.PieChart,
@@ -29,27 +30,54 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  constructor(private dataService: DataServiceService) { }
+  constructor(private service: DataServiceService) { }
 
   ngOnInit(): void {
-    this.dataService.getGlobalData().subscribe(
-      {
-        next: (result) => {
-          this.globalData = result;
-          result.forEach(cs => {
-            if (!Number.isNaN(cs.cases)) {
+    merge(
+      this.service.getGlobalData().pipe(
+        map(result => {
+          this.data = result;
+          this.data.forEach(cs => {
+            if (!Number.isNaN(cs.cases)){
               this.totalCases += cs.cases;
               this.totalDeaths += cs.deaths;
-            }
-          })
-          this.initChart('c');
-        },
+            }  
+        })
+        this.initChart('c');
+        })
+      ),
+      this.service.populateNewCases().pipe(
+        map(result => {
+          this.newCases = result;
+        })
+      )
+    ).subscribe(
+      {
         complete: ()=> {
           this.loading = false;
         }
       }
     )
   }
+
+    // this.dataService.getGlobalData().subscribe(
+    //   {
+    //     next: (result) => {
+    //       this.data = result;
+    //       result.forEach(cs => {
+    //         if (!Number.isNaN(cs.cases)) {
+    //           this.totalCases += cs.cases;
+    //           this.totalDeaths += cs.deaths;
+    //         }
+    //       })
+    //       this.initChart('c');
+    //     },
+    //     complete: ()=> {
+    //       this.loading = false;
+    //     }
+    //   }
+    // )
+  // }
 
   initChart(caseType: string) {
     this.datatable = [];
@@ -60,7 +88,7 @@ export class HomeComponent implements OnInit {
       this.chart.columns=["Country", "Cases"];
     }
     
-    this.globalData.forEach(cs => {
+    this.data.forEach(cs => {
       let value: number;
       if (caseType == 'c') {
         if (cs.cases > 2000) {

@@ -15,7 +15,6 @@ export class DataServiceService {
   private globalDataUrl: string;
   private dateWiseDataUrl = `https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv`;
   private apiUrl: string = "http://wirus.herokuapp.com/";
-  public newCases: number = 0;
   private year;
   private month: number;
   private day;
@@ -33,7 +32,7 @@ export class DataServiceService {
     this.month = now.getMonth() +1;
     this.day = now.getDate();
     this.globalDataUrl = `${this.baseUrl}${this.getDate(this.month)}-${this.getDate(this.day)}-${this.year}.csv`;
-    this.popolateNewCases();
+    // this.popolateNewCases();
   }
 
   getDateWiseData() {
@@ -114,16 +113,15 @@ export class DataServiceService {
     return this.http.get<Location[]>(`${this.apiUrl}api`);
   }
 
-  private popolateNewCases(){
-    console.log("popolateNewCases()");
-    
-    return this.http.get(`${this.apiUrl}home`, { responseType: 'text' }).pipe(
+  populateNewCases(){
+    return this.http.get(`${this.apiUrl}api`, { responseType: 'text' }).pipe(
       map(result => {
-        let rows = result.split('\n');
-        let line: string = rows[23];
-        this.newCases = +line.match(/\n/);
-        console.log("this.newCases" + this.newCases);
-      }))
-    return null;
+        let rows = result.split('}');
+        let world: string = rows[rows.length-5];
+        console.log(world);
+        let newCases = +world.match(/[0-9]+/);
+        return newCases;
+      })
+    );
   }
 }

@@ -18,6 +18,7 @@ export class CountriesComponent implements OnInit {
   countries: string[] = [];
   totalCases: number = 0;
   totalDeaths: number = 0;
+  newCases: number = 0;
   dateWiseData;
   selectedCountryData: DateWiseData[];
   dataTable = [];
@@ -45,6 +46,11 @@ export class CountriesComponent implements OnInit {
 
   ngOnInit(): void {
     merge(
+      this.service.populateNewCases().pipe(
+        map(result => {
+          this.newCases = result;
+        })
+      ),
       this.service.getDateWiseData().pipe(
         map(result => {
           this.dateWiseData = result;
