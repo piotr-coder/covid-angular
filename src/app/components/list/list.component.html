@@ -1,0 +1,47 @@
+<div class="ui inverted dimmer" [class.active]='loading'>
+  <div class="ui text loader">Loading</div>
+</div>
+
+<h1 class="text-center">Corona Covid-19 List</h1>
+<p class="text-center">This application lists the current number of cases reported across the globe</p>
+
+<div class="jumbotron">
+  <h3 class="display-8">{{totalReportedCases | number}}</h3>
+  <p class="lead">Total cases reported as of today</p>
+  <h3 class="display-8">{{totalReportedDeaths | number}}</h3>
+  <p class="lead">Total deaths reported as of today</p>
+  <hr class="my-4">
+  <p>
+      <span>New cases reported since previous day: </span>
+      <span>{{totalNewCases | number}}</span>
+  </p>
+  <hr class="my-4">
+</div>
+
+<nav class="navbar">
+    <input class="form-control" type="text" name="country" [(ngModel)]="country" (ngModelChange)="search()"
+    placeholder="Enter country to search">
+</nav>
+
+<table class="table">
+    <tr>
+      <th (click)="sort('location')">Location&nbsp;<i class="fa fa-sort"></i></th>
+      <th (click)="sort('newCases')">New Cases&nbsp;<i class="fa fa-sort"></i></th>
+      <th (click)="sort('totalCases')">Total Cases&nbsp;<i class="fa fa-sort"></i></th>
+      <th (click)="sort('newCases')">New Deaths&nbsp;<i class="fa fa-sort"></i></th>
+      <th (click)="sort('deaths')">Total Deaths&nbsp;<i class="fa fa-sort"></i></th>
+      <th (click)="sort('polulation')">Polulation&nbsp;<i class="fa fa-sort"></i></th>
+    </tr>
+
+  <tbody>
+    <tr *ngFor="let location of locations | orderBy: key: reverse">
+      <td>{{ location.country }}</td>
+      <td>{{ location.newCases }}</td>
+      <td>{{ location.totalCases }}</td>
+      <td>{{ location.deaths }}</td>
+      <td>{{ location.totalDeaths }}</td>
+      <td>{{ location.population }}</td>
+    </tr>
+  </tbody>
+
+</table>
