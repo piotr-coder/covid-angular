@@ -6,9 +6,9 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-          <a class="nav-link active" aria-current="page" routerLink='/'>Home</a>
-          <a class="nav-link" routerLink='countries'>Countries</a>
-          <a class="nav-link" routerLink='list'>List</a>
+          <a class="nav-link" [routerLinkActive]="['active']" routerLink="/">Home</a>
+          <a class="nav-link" [routerLinkActive]="['active']" routerLink="countries">Countries</a>
+          <a class="nav-link" [routerLinkActive]="['active']" routerLink="list">List</a>
         </div>
       </div>
     </div>

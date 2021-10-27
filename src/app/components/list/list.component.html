@@ -5,18 +5,8 @@
 <h1 class="text-center">Corona Covid-19 List</h1>
 <p class="text-center">This application lists the current number of cases reported across the globe</p>
 
-<div class="jumbotron">
-  <h3 class="display-8">{{totalReportedCases | number}}</h3>
-  <p class="lead">Total cases reported as of today</p>
-  <h3 class="display-8">{{totalReportedDeaths | number}}</h3>
-  <p class="lead">Total deaths reported as of today</p>
-  <hr class="my-4">
-  <p>
-      <span>New cases reported since previous day: </span>
-      <span>{{totalNewCases | number}}</span>
-  </p>
-  <hr class="my-4">
-</div>
+<app-dashboard-card [totalCases]='totalReportedCases' [newCases]='totalNewCases'
+[totalDeaths]='totalReportedDeaths'></app-dashboard-card>
 
 <nav class="navbar">
     <input class="form-control" type="text" name="country" [(ngModel)]="country" (ngModelChange)="search()"

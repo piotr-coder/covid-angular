@@ -9,7 +9,8 @@
         <div class="form-group col-lg-5 mx-auto">
             <label for="c">Select country</label>
             <select name="" class="form-control" id="c" #input (change)='updateValues(input.value)'>
-                <option *ngFor="let country of countries" value="{{country}}">{{country}}</option>
+                <option *ngFor="let country of countries" value="{{country}}" 
+                            [selected]="country == 'Poland'">{{country}}</option>
             </select>
         </div>
     </div>
@@ -18,7 +19,8 @@
 
     <div class="card">
         <div class="col">
-            <google-chart [type]='chart.type' [columns]='chart.columns' [data]='dataTable' [options]='chart.options'></google-chart>
+            <google-chart [type]='chart.type' [columns]="['Month', 'Total Cases']" [data]='dataTableTotal' [options]='chart.options'></google-chart>
+            <google-chart [type]='chart.type' [columns]='chart.columns' [data]='dataTableNewCases' [options]='chart.options'></google-chart>
             <table class="table">
                 <thead>
                     <tr>

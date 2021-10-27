@@ -14,14 +14,14 @@ export class DataServiceService {
   private baseUrl = `https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/`;
   private globalDataUrl: string;
   private dateWiseDataUrl = `https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv`;
-  private apiUrl: string = "http://wirus.herokuapp.com/";
+  private apiUrl: string = "http://wirus.herokuapp.com/api";
   private year;
   private month: number;
   private day;
 
   getDate(date: number){
     if(date < 10){
-      return '0'+date;
+      return `0${date}`;
     }
     return date;
   }
@@ -110,11 +110,11 @@ export class DataServiceService {
     )
   }
   getLocationStats(): Observable<Location[]>{
-    return this.http.get<Location[]>(`${this.apiUrl}api`);
+    return this.http.get<Location[]>(this.apiUrl);
   }
 
   populateNewCases(){
-    return this.http.get(`${this.apiUrl}api`, { responseType: 'text' }).pipe(
+    return this.http.get(this.apiUrl, { responseType: 'text' }).pipe(
       map(result => {
         let rows = result.split('}');
         let world: string = rows[rows.length-5];

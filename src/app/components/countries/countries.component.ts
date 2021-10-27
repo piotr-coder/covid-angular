@@ -21,7 +21,8 @@ export class CountriesComponent implements OnInit {
   newCases: number = 0;
   dateWiseData;
   selectedCountryData: DateWiseData[];
-  dataTable = [];
+  dataTableTotal = [];
+  dataTableNewCases = [];
   chart = {
     type : ChartType.ComboChart,
     columns: ['Month', 'Cases'],
@@ -46,11 +47,6 @@ export class CountriesComponent implements OnInit {
 
   ngOnInit(): void {
     merge(
-      this.service.populateNewCases().pipe(
-        map(result => {
-          this.newCases = result;
-        })
-      ),
       this.service.getDateWiseData().pipe(
         map(result => {
           this.dateWiseData = result;
@@ -73,11 +69,22 @@ export class CountriesComponent implements OnInit {
     )}
 
   updateChart(){
-    this.dataTable = [];
-    // this.dataTable.push(['Cases', 'Data']);
+    this.dataTableTotal = [];
     this.selectedCountryData.forEach(cs => {
-      this.dataTable.push([cs.date, cs.cases]);
+      this.dataTableTotal.push([cs.date, cs.cases]);
     })
+
+    this.dataTableNewCases = [];
+    for(let i: number = 150; i<this.selectedCountryData.length; i++){
+      let currentDay: DateWiseData = this.selectedCountryData[i];
+      let previousDay: DateWiseData = this.selectedCountryData[i-1];
+      let cases: number = currentDay.cases - previousDay.cases;
+      if (currentDay.cases <= 0 && cases <= 0){
+        cases = 0; 
+      }
+      this.dataTableNewCases.push([currentDay.date, cases]);
+    }
+
   }
 
   updateValues(country: string){
@@ -88,6 +95,8 @@ export class CountriesComponent implements OnInit {
       }
     })
     this.selectedCountryData = this.dateWiseData[country];
+    this.newCases=this.selectedCountryData[this.selectedCountryData.length-1].cases
+                 -this.selectedCountryData[this.selectedCountryData.length-2].cases;
     this.updateChart();
   }
 }

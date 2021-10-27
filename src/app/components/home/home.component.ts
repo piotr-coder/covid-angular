@@ -42,9 +42,7 @@ export class HomeComponent implements OnInit {
               this.totalCases += cs.cases;
               this.totalDeaths += cs.deaths;
             }  
-        })
-        this.initChart('c');
-        })
+        })})
       ),
       this.service.populateNewCases().pipe(
         map(result => {
@@ -54,34 +52,15 @@ export class HomeComponent implements OnInit {
     ).subscribe(
       {
         complete: ()=> {
+          this.initChart('c');
           this.loading = false;
         }
       }
     )
   }
 
-    // this.dataService.getGlobalData().subscribe(
-    //   {
-    //     next: (result) => {
-    //       this.data = result;
-    //       result.forEach(cs => {
-    //         if (!Number.isNaN(cs.cases)) {
-    //           this.totalCases += cs.cases;
-    //           this.totalDeaths += cs.deaths;
-    //         }
-    //       })
-    //       this.initChart('c');
-    //     },
-    //     complete: ()=> {
-    //       this.loading = false;
-    //     }
-    //   }
-    // )
-  // }
-
   initChart(caseType: string) {
     this.datatable = [];
-    // this.datatable.push(["Country", "Cases"]);
     if(caseType == 'd'){
       this.chart.columns=["Country", "Deaths"];      
     } else {
